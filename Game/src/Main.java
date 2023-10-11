@@ -1,3 +1,10 @@
+import characters.Character;
+import characters.Enemy;
+import characters.Player;
+import items.Item;
+import items.ItemType;
+import world.World;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -33,17 +40,14 @@ public class Main {
 
         // @Sword31312ad
         Item sword = new Item(world, ItemType.SWORD);
-        System.out.println(sword);
         Item hammer = new Item(world, ItemType.HAMMER);
-        System.out.println(hammer);
         Item dagger = new Item(world, ItemType.DAGGER);
-        System.out.println(dagger);
         List<Item> items = new ArrayList<>();
         items.add(sword);
         items.add(hammer);
         items.add(dagger);
 
-//        Character character = new Character(); ei saa kui on abstract
+//        characters.Character character = new characters.Character(); ei saa kui on abstract
 
 
         // boolean isAdult;  <--- deklareerin
@@ -55,10 +59,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         // ObjectMapper objectMapper = new ObjectMapper();
         // RestTemplate restTemplate = new RestTemplate();
-        // Item sword = new Item();
-        // Item hammer = new Item();
-        // Character player = new Player();
-        // Character Enemy = new Enemy();
+        // items.Item sword = new items.Item();
+        // items.Item hammer = new items.Item();
+        // characters.Character player = new characters.Player();
+        // characters.Character characters.Enemy = new characters.Enemy();
 
         world.printMap(characters, items);
 
@@ -73,11 +77,14 @@ public class Main {
             world.printMap(characters, items);
 
             for (Item i: items) {
-                if (i.xCoordinate == player.xCoordinate &&
-                    i.yCoordinate == player.yCoordinate) {
+                if (i.getxCoordinate() == player.getxCoordinate() &&
+                    i.getyCoordinate() == player.getyCoordinate()) {
                     player.addItem(i);
                 }
             }
+
+//            sword.hit(enemy);
+//            enemy.hit(player);
 
             input = scanner.nextLine();
         }

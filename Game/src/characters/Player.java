@@ -1,30 +1,29 @@
+package characters;
+
+
+import items.Item;
+import world.World;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Character {
-    int lives;
-    List<Item> items; // {xCoord: 2, yCoord: 1, symbol: 'x', lives: 0, items: [{name: "",.. }, {}]}
+    private List<Item> items; // {xCoord: 2, yCoord: 1, symbol: 'x', lives: 0, items: [{name: "",.. }, {}]}
 
     public Player(World world) {
         super('x', world);
-        this.lives = 3;
-        items = new ArrayList<>();
+        this.lives = 10;
+        this.items = new ArrayList<>();
     }
 
                     // @Sword31312ad
     public void addItem(Item item) {
         if (items.contains(item)) {
-            item.durability++;
-//            System.out.println("INCREASED DURABILITY");
-//            System.out.println(item);
-//            System.out.println(items);
+            item.increaseDurability();
 //            items[i] = item; POLE VAJA, SEST UUENDATAKSE MÄLUKOHA JÄRG
         } else {
             // @Sword31312ad
             items.add(item);
-//            System.out.println("ADDED");
-//            System.out.println(item);
-//            System.out.println(items);
         }
     }
 
@@ -36,7 +35,7 @@ public class Player extends Character {
                 }
             }
             case "s" -> {
-                if (yCoordinate < world.height - 2) {
+                if (yCoordinate < world.getHeight() - 2) {
                     yCoordinate++;
                 }
             }
@@ -46,7 +45,7 @@ public class Player extends Character {
                 }
             }
             case "d" -> {
-                if (xCoordinate < world.width - 2) {
+                if (xCoordinate < world.getWidth() - 2) {
                     xCoordinate++;
                 }
             }

@@ -1,8 +1,21 @@
+package world;
+
+import characters.Character;
+import items.Item;
+
 import java.util.List;
 
 public class World {
-    int height = 5;
-    int width = 10;
+    private int height = 5;
+    private int width = 10;
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 
     public void printMap(List<Character> characters,
                          List<Item> items) {
@@ -29,14 +42,14 @@ public class World {
 //                    symbol = enemySymbol;
 //                }
                 for (Item i: items) {
-                    if (i.xCoordinate == x && i.yCoordinate == y) {
-                        symbol = i.symbol;
+                    if (i.getxCoordinate() == x && i.getyCoordinate() == y) {
+                        symbol = i.getSymbol();
                         break;
                     }
                 }
                 for (Character c: characters) {
-                    if (c.xCoordinate == x && c.yCoordinate == y) {
-                        symbol = c.symbol;
+                    if (c.getxCoordinate() == x && c.getyCoordinate() == y) {
+                        symbol = c.getSymbol();
                         break;
                     }
                 }
