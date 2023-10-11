@@ -1,11 +1,16 @@
-public abstract class Character {
+public abstract class Character implements WorldObject {
     int xCoordinate;
     int yCoordinate;
     char symbol;
 
-    public Character(char symbol) {
-        this.xCoordinate = 3; // Random number generator, et tekiks suvalise koha peal: KAARDIL
-        this.yCoordinate = 3; // 1st Heightini-2
+    public Character(char symbol, World world) {
+        this.xCoordinate = generateRandomCoordinate(world.width);
+        this.yCoordinate = generateRandomCoordinate(world.height);
         this.symbol = symbol;
+    }
+
+    @Override
+    public int generateRandomCoordinate(int dimension) {
+        return (1+(int)(Math.random()*((dimension-2))));
     }
 }

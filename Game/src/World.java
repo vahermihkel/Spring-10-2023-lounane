@@ -4,7 +4,8 @@ public class World {
     int height = 5;
     int width = 10;
 
-    public void printMap(List<Character> characters) {
+    public void printMap(List<Character> characters,
+                         List<Item> items) {
         char symbol;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -27,6 +28,12 @@ public class World {
 //                if (enemyXCoordinate == x && enemyYCoordinate == y) {
 //                    symbol = enemySymbol;
 //                }
+                for (Item i: items) {
+                    if (i.xCoordinate == x && i.yCoordinate == y) {
+                        symbol = i.symbol;
+                        break;
+                    }
+                }
                 for (Character c: characters) {
                     if (c.xCoordinate == x && c.yCoordinate == y) {
                         symbol = c.symbol;

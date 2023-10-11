@@ -9,7 +9,7 @@ public class Main {
 
 
         // {xCoordinate: 2, yCoordinate: 2, symbol: 'x'}
-        Player player = new Player();
+        Player player = new Player(world);
 
         // Primitiivid:
 
@@ -25,11 +25,23 @@ public class Main {
 //        String name = "";
 //        Integer playerX = 2;
 
-        Enemy enemy = new Enemy();
+        Enemy enemy = new Enemy(world);
 
         List<Character> characters = new ArrayList<>();
         characters.add(player);
         characters.add(enemy);
+
+        // @Sword31312ad
+        Item sword = new Item(world, ItemType.SWORD);
+        System.out.println(sword);
+        Item hammer = new Item(world, ItemType.HAMMER);
+        System.out.println(hammer);
+        Item dagger = new Item(world, ItemType.DAGGER);
+        System.out.println(dagger);
+        List<Item> items = new ArrayList<>();
+        items.add(sword);
+        items.add(hammer);
+        items.add(dagger);
 
 //        Character character = new Character(); ei saa kui on abstract
 
@@ -48,7 +60,7 @@ public class Main {
         // Character player = new Player();
         // Character Enemy = new Enemy();
 
-        world.printMap(characters);
+        world.printMap(characters, items);
 
         String input = scanner.nextLine();
 //        System.out.println(input);
@@ -56,9 +68,16 @@ public class Main {
         // primitiive võrdleme võrdusmärkidega
         // klasse võrdleme .equals abil
         while (!input.equals("end")) {
-            player.move(input);
+            player.move(input, world);
 
-            world.printMap(characters);
+            world.printMap(characters, items);
+
+            for (Item i: items) {
+                if (i.xCoordinate == player.xCoordinate &&
+                    i.yCoordinate == player.yCoordinate) {
+                    player.addItem(i);
+                }
+            }
 
             input = scanner.nextLine();
         }
