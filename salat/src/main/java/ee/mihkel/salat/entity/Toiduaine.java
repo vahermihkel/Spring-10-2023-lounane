@@ -1,16 +1,21 @@
 package ee.mihkel.salat.entity;
 
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 // {nimetus: "Kartul", valgud: 2.0, rasvad: 1.5, sysivesikud: 12.0}
 @Getter
+@Entity // <--- tekib andmebaasi selle classi nimetusega tabel
+@NoArgsConstructor
 public class Toiduaine {
-    private String nimetus;
-    private double valgud;
-    private double rasvad;
-    private double sysivesikud;
+    @Id
+    private String nimetus; // primaarvõti ehk selle abil kustutame ja muudame
+    private double valgud; // veerg nr2
+    private double rasvad; // veerg nr3
+    private double sysivesikud; // veerg nr4
 
     public Toiduaine(String nimetus, double valgud, double rasvad, double sysivesikud) throws Exception {
         if (valgud + rasvad + sysivesikud > 100) {
