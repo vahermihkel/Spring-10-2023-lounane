@@ -7,10 +7,7 @@ import ee.mihkel.salat.repository.ToiduaineRepository;
 import ee.mihkel.salat.repository.ToidukomponentRepository;
 import ee.mihkel.salat.repository.ToitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +31,7 @@ public class SaladController {
     // localhost:8080/lisa-toiduaine/kartul/4/2/12
     // @GetMapping("lisa-toiduaine/{nimetus}/{valk}/{rasv}/{sysivesik}")
     // localhost:8080/lisa-toiduaine?nimetus=kartul&valgud=4&rasvad=2&sysivesikud=12
-    @GetMapping("lisa-toiduaine") // localhost:8080/lisa-toiduaine
+    @PostMapping("lisa-toiduaine") // localhost:8080/lisa-toiduaine
     public List<Toiduaine> lisaToiduaine(
             @RequestParam String nimetus,
             @RequestParam double valgud,
@@ -64,7 +61,7 @@ public class SaladController {
 //    List<Toidukomponent> toidukomponendid = new ArrayList<>(); <--------------------------------------
 
     // localhost:8080/lisa-toidukomponent?toiduaineNimetus=kartul&kogus=200
-    @GetMapping("lisa-toidukomponent")
+    @PostMapping("lisa-toidukomponent")
     public List<Toidukomponent> lisaToidukomponent(
             @RequestParam String toiduaineNimetus,
             @RequestParam int kogus
@@ -127,7 +124,7 @@ public class SaladController {
 //    List<Toit> toidud = new ArrayList<>(); // <------------------------
 
     // localhost:8080/lisa-toit?nimetus=Kartulisalat&toidukomponentideIds=1,2
-    @GetMapping("lisa-toit")
+    @PostMapping("lisa-toit")
     public List<Toit> lisaToit(
             @RequestParam String nimetus,
             @RequestParam Integer[] toidukomponentideIds
@@ -177,6 +174,13 @@ public class SaladController {
 //        return
 //    }
 }
+
+// GET - võtmiseks
+// POST - lisamiseks
+// DELETE - kustutamiseks
+// PUT - muutmiseks
+// PATCH - ühe kindla välja muutmiseks (nt broneering muuta reserveerituks, tellimus makstuks,
+                //      kogus muudetakse ühe võrra väiksemaks)
 
 // 18.10 Andmebaas, MUUDAME Salat projektis kõik andmebaasi minevateks
 // 20.10 Loomad   UUS andmebaasiga seotud projekt
