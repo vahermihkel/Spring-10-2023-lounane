@@ -1,5 +1,8 @@
 package ee.rebecca.hilowgame.entity;
 
+import lombok.Getter;
+
+@Getter
 public class Card {
     private String suit;
     private String rank_name;

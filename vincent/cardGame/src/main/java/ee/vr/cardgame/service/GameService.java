@@ -4,14 +4,16 @@ import ee.vr.cardgame.entity.Card;
 import ee.vr.cardgame.entity.GuessType;
 import ee.vr.cardgame.model.GuessResponse;
 import lombok.Getter;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service
 public class GameService {
     List<Card> deck = new ArrayList<>();
-    private Card baseCard;
-
+    Card baseCard;
     private long startTime;
+    private int score = 0;
 
     public GameService() {
         makeADeck();
@@ -23,9 +25,6 @@ public class GameService {
         startTime = System.currentTimeMillis();
         return baseCard;
     }
-
-    private int score = 0;
-
     public GuessResponse userGuess(GuessType guess) {
 
         Card nextCard = drawCard();
@@ -39,6 +38,18 @@ public class GameService {
         } else {
             return markAsIncorrectAnswer(nextCard);
         }
+    }
+
+    public GuessResponse checkIfTimeout() {
+        GuessResponse response = new GuessResponse();
+        long guessTime = System.currentTimeMillis();
+        if (guessTime > startTime + 10000) {
+            response.setMessage("TIME_OUT");
+            response.setCard(baseCard);
+            response.setScore(score);
+        }
+        startTime = guessTime;
+        return response;
     }
 
     private GuessResponse markAsCorrectAnswer(Card card) {
@@ -82,11 +93,11 @@ public class GameService {
         }
     }
 
-    public void startDrawing() {
+    private void startDrawing() {
         baseCard = drawCard();
     }
 
-    public Card drawCard() {
+    private Card drawCard() {
         if (!deck.isEmpty()) {
             return deck.remove(0);
         } else {
@@ -97,18 +108,6 @@ public class GameService {
 
     private void shuffleDeck() {
         Collections.shuffle(deck);
-    }
-
-    public GuessResponse checkIfTimeout() {
-        GuessResponse response = new GuessResponse();
-        long guessTime = System.currentTimeMillis();
-        if (guessTime > startTime + 10000) {
-            response.setMessage("TIME_OUT");
-            response.setCard(baseCard);
-            response.setScore(score);
-        }
-        startTime = guessTime;
-        return response;
     }
 }
 
