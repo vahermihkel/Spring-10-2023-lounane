@@ -22,7 +22,7 @@ class GameServiceTest {
 
     @Test
     void cardSuitIsCorrectWhenGameStarts() {
-        Card card = gameService.getBaseCard();
+        Card card = gameService.getBaseCard("Mihkel");
         boolean isCorrectSuit = Arrays.stream(suits).anyMatch(e -> e.equals(card.getSuit()));
         assertTrue(isCorrectSuit);
     }
@@ -31,7 +31,7 @@ class GameServiceTest {
 
     @Test
     void checkIfTimeout() throws InterruptedException {
-        gameService.getBaseCard();
+        gameService.getBaseCard("Mihkel");
         Thread.sleep(11000);
         GuessResponse response = gameService.checkIfTimeout();
         assertEquals("TIME_OUT", response.getMessage());
