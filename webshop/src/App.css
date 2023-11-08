@@ -1,0 +1,22 @@
+.App {
+  text-align: center;
+}
+
+.nupp {
+  background-color: rgb(28, 241, 170);
+}
+
+.nupp:hover {
+  background-color: rgb(18, 154, 108);
+  cursor: pointer;
+}
+
+.pilt {
+  width: 200px;
+  /* height: 200px; */
+}
+
+.pilt:hover {
+  opacity: 70%;
+  cursor: pointer;
+}
