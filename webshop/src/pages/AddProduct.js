@@ -3,6 +3,11 @@ import React, { useRef, useState } from 'react'
 function AddProduct() {
   const [message, setMessage] = useState("Lisa toode!");
   const nameRef = useRef();
+  const priceRef = useRef();
+  const imageRef = useRef();
+  const categoryRef = useRef();
+  const stockRef = useRef();
+  const url = "https://dummyjson.com/products";
 
   console.log("Re-renderdan");
 
@@ -11,9 +16,30 @@ function AddProduct() {
   const add = () => {
     if (nameRef.current.value === "") {
       setMessage("Tühja nimetusega lisada ei saa!");
-    } else {
-      setMessage("Toode lisatud: " + nameRef.current.value);
+      return;
+    } 
+    
+    setMessage("Toode lisatud: " + nameRef.current.value);
+
+    // Entity
+    // private String name;
+    // private int price;
+    const newProduct = {
+      "name": nameRef.current.value,
+      "price": priceRef.current.value,
+      "image": imageRef.current.value,
+      "category": categoryRef.current.value,
+      "stock": stockRef.current.value,
+      // "rating": 0
     }
+
+    fetch(url, 
+      {
+        "method": "POST", 
+        "body": JSON.stringify(newProduct), 
+        "headers": {"Content-Type": "application/json"}
+      }).then(res => res.json())
+        .then(body => console.log(body));
   }
 
   return (
@@ -21,6 +47,14 @@ function AddProduct() {
       <div>{message}</div>
       <label>Uue toote nimi</label> <br />
       <input ref={nameRef} type="text" /> <br />
+      <label>Uue toote hind</label> <br />
+      <input ref={priceRef} type="text" /> <br />
+      <label>Uue toote pilt</label> <br />
+      <input ref={imageRef} type="text" /> <br />
+      <label>Uue toote kategooria</label> <br />
+      <input ref={categoryRef} type="text" /> <br />
+      <label>Uue toote kogus</label> <br />
+      <input ref={stockRef} type="text" /> <br />
       <button onClick={add}>Lisa</button> <br />
     </div>
   )
