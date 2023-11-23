@@ -1,28 +1,44 @@
 package ee.mihkel.resttemplate.controller;
 
-import ee.mihkel.resttemplate.model.Nordpool;
-import ee.mihkel.resttemplate.model.Omniva;
-import ee.mihkel.resttemplate.model.Post;
-import ee.mihkel.resttemplate.model.Product;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import ee.mihkel.resttemplate.model.*;
+import ee.mihkel.resttemplate.util.YldisedFunktsioonid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 public class ApiController {
 
-    @GetMapping("omniva")
-    public List<Omniva> getOmnivaParcelMachines() {
+    @Autowired
+    YldisedFunktsioonid yldisedFunktsioonid;
 
-        RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    Random random;
+
+//    RestTemplate restTemplate = new RestTemplate();
+
+    @GetMapping("omniva") // localhost:8080/omniva
+    public List<Omniva> getOmnivaParcelMachines() {
+        yldisedFunktsioonid.kontrolliIsikukoodi();
+        yldisedFunktsioonid.getRestTemplate();
+
+//        RestTemplate restTemplate = new RestTemplate();
+        System.out.println(restTemplate);
         String url = "https://www.omniva.ee/locations.json";
 //        Optional<String> stringOptional = Optional.of("ss");
 //        stringOptional.get();
@@ -36,10 +52,12 @@ public class ApiController {
         return omniva;
     }
 
-    @GetMapping("posts/{userId}")
+    @GetMapping("posts/{userId}") // localhost:8080/posts/1
     public List<Post> getPosts(@PathVariable int userId) {
+        yldisedFunktsioonid.getRestTemplate();
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
+        System.out.println(restTemplate);
         String url = "https://jsonplaceholder.org/posts";
         ResponseEntity<Post[]> response = restTemplate.exchange(url, HttpMethod.GET,null, Post[].class);
 //        System.out.println(response.getBody());
@@ -52,10 +70,11 @@ public class ApiController {
         return posts;
     }
 
-    @GetMapping("products/{minRating}")
+    @GetMapping("products/{minRating}") // localhost:8080/products/4.0
     public List<Product> getProducts(@PathVariable double minRating) {
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
+        System.out.println(restTemplate);
         String url = "https://fakestoreapi.com/products";
         ResponseEntity<Product[]> response = restTemplate.exchange(url, HttpMethod.GET,null, Product[].class);
 
@@ -66,10 +85,11 @@ public class ApiController {
         return products;
     }
 
-    @GetMapping("nordpool") // country
+    @GetMapping("nordpool") // localhost:8080/nordpool
     public Nordpool getNordpool() {
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
+        System.out.println(restTemplate);
         String url = "https://dashboard.elering.ee/api/nps/price";
         ResponseEntity<Nordpool> response = restTemplate.exchange(url, HttpMethod.GET,null, Nordpool.class);
 
@@ -78,5 +98,32 @@ public class ApiController {
 //                .toList();
 
         return response.getBody();
+    }
+
+    @GetMapping("payment") // localhost:8080/payment?amount=3000
+    public String makePayment(
+            @RequestParam double amount
+    ) {
+
+        String url = "https://igw-demo.every-pay.com/api/v4/payments/oneoff";
+
+        EveryPayData body = new EveryPayData();
+        body.setApi_username("e36eb40f5ec87fa2");
+        body.setAccount_name("EUR3D1");
+        body.setAmount(amount); // hiljem teeme muudetavaks
+        body.setOrder_reference(String.valueOf(random.nextInt(10000,999999))); // hiljem teeme muudetavaks
+        body.setNonce("dadas" + ZonedDateTime.now() + random.nextInt(10000,999999)); // hiljem teeme muudetavaks
+        body.setTimestamp(ZonedDateTime.now().toString());
+        body.setCustomer_url("https://maksmine.web.app");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth("e36eb40f5ec87fa2", "7b91a3b9e1b74524c2e9fc282f8ac8cd");
+
+        HttpEntity<EveryPayData> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<EveryPayResponse> response = restTemplate.exchange(url, HttpMethod.POST, entity, EveryPayResponse.class);
+
+        return response.getBody().getPayment_link();
     }
 }
