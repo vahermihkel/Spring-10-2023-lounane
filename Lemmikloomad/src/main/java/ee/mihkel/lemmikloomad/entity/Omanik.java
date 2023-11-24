@@ -19,6 +19,11 @@ public class Omanik {
     @Id
     private String nimi;
 
+    private String tel;
+    private String email;
+    private String isikukood;
+    private String aadress;
+
     @OneToMany
     private List<Lemmikloom> lemmikloomad;
 }

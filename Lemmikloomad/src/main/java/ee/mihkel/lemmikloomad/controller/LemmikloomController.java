@@ -2,11 +2,18 @@ package ee.mihkel.lemmikloomad.controller;
 
 import ee.mihkel.lemmikloomad.entity.Lemmikloom;
 import ee.mihkel.lemmikloomad.entity.Omanik;
+import ee.mihkel.lemmikloomad.model.OmanikDTO;
 import ee.mihkel.lemmikloomad.repository.LemmikloomRepository;
 import ee.mihkel.lemmikloomad.repository.OmanikRepository;
 import ee.mihkel.lemmikloomad.service.LemmikloomService;
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,12 +39,16 @@ public class LemmikloomController {
     @Autowired
     LemmikloomService lemmikloomService;
 
-    // localhost:8080/lisa-loom?nimetus=koer&kaal=2.3&omanikuNimi=Kaarel
+    // localhost:8080/lisa-loom?nimetus=siga&kaal=25.5&omanikuNimi=Kalle&omanikuTel=55123333&omanikuEmail=Kalle@gmail.com&omanikuAadress=Tammsaare111&omanikuIsikukood=388112233445
     @PostMapping("lisa-loom")
     public ResponseEntity<List<Lemmikloom>> lisaLoom(
             @RequestParam String nimetus,
             @RequestParam double kaal,
-            @RequestParam String omanikuNimi) {
+            @RequestParam String omanikuNimi,
+            @RequestParam String omanikuTel,
+            @RequestParam String omanikuEmail,
+            @RequestParam String omanikuAadress,
+            @RequestParam String omanikuIsikukood){
                             //   new LemmikLoom(nimetus, kaal)
         Lemmikloom lemmikloom = Lemmikloom.builder()
                 .nimetus(nimetus)
@@ -46,8 +57,13 @@ public class LemmikloomController {
         lemmikloomRepository.save(lemmikloom);
 
         Optional<Omanik> omanikOptional = omanikRepository.findById(omanikuNimi);
+//        Omanik omanik = loomaLisamine.getOmanik();
         Omanik omanik = omanikOptional.orElseGet(() -> Omanik.builder()
                 .nimi(omanikuNimi)
+                .tel(omanikuTel)
+                .email(omanikuEmail)
+                .aadress(omanikuAadress)
+                .isikukood(omanikuIsikukood)
                 .lemmikloomad(new ArrayList<>())
                 .build());
         omanik.getLemmikloomad().add(lemmikloom);
@@ -61,6 +77,33 @@ public class LemmikloomController {
     }
     // 1. Staatuskoodi võimalik muuta
     // 2. Seadistada ehk headereid kaasa anda
+
+    @GetMapping("loomad") // localhost:8080/loomad?page=1&size=2
+    public ResponseEntity<Page<Lemmikloom>> saaLoomad(Pageable pageable) {
+//        Pageable pageable1 = new PageRequest(pageable.getPageNumber(), 10);
+        Pageable pageable1 = PageRequest.of(pageable.getPageNumber(), 3);
+        return ResponseEntity.ok(lemmikloomRepository.findAllBy(pageable1));
+    }
+
+    @Autowired
+    ModelMapper modelMapper;
+
+    @GetMapping("omanikud") // localhost:8080/omanikud
+    public ResponseEntity<List<OmanikDTO>> saaOmanikud() {
+//        ModelMapper modelMapper = new ModelMapper();
+//        List<OmanikDTO> omanikDTOs = new ArrayList<>();
+//        for (Omanik o: omanikRepository.findAll()) {
+//            OmanikDTO omanikDTO = new OmanikDTO();
+//            omanikDTO.setNimi(o.getNimi());
+//            omanikDTO.setEmail(o.getEmail());
+//            omanikDTOs.add(omanikDTO);
+//        }
+        List<OmanikDTO> omanikDtos = omanikRepository.findAll()
+                .stream()
+                .map(omanik -> modelMapper.map(omanik, OmanikDTO.class))
+                .toList();
+        return ResponseEntity.ok(omanikDtos);
+    }
 
     @GetMapping("loomade-arv")
     public ResponseEntity<Integer> saaLoomadeArv(@RequestParam String omanikuNimi) {

@@ -1,6 +1,8 @@
 package ee.mihkel.lemmikloomad.repository;
 
 import ee.mihkel.lemmikloomad.entity.Lemmikloom;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -18,4 +20,5 @@ public interface LemmikloomRepository extends JpaRepository<Lemmikloom, Integer>
     //localhost:8080/findAllByKaalIsGreaterThanAndNimetusContains?min=2.1&nimetus=Koer
     List<Lemmikloom> findAllByKaalIsGreaterThanAndNimetusContains(double kaal, String nimetus);
 
+    Page<Lemmikloom> findAllBy(Pageable pageable);
 }
