@@ -31,7 +31,7 @@ public class SaladController {
     // localhost:8080/lisa-toiduaine/kartul/4/2/12
     // @GetMapping("lisa-toiduaine/{nimetus}/{valk}/{rasv}/{sysivesik}")
     // localhost:8080/lisa-toiduaine?nimetus=kartul&valgud=4&rasvad=2&sysivesikud=12
-    @PostMapping("lisa-toiduaine") // localhost:8080/lisa-toiduaine
+    @GetMapping("lisa-toiduaine") // localhost:8080/lisa-toiduaine
     public List<Toiduaine> lisaToiduaine(
             @RequestParam String nimetus,
             @RequestParam double valgud,

@@ -7,6 +7,10 @@ import ee.mihkel.lemmikloomad.repository.OmanikRepository;
 import ee.mihkel.lemmikloomad.service.LemmikloomService;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +34,7 @@ public class LemmikloomController {
 
     // localhost:8080/lisa-loom?nimetus=koer&kaal=2.3&omanikuNimi=Kaarel
     @PostMapping("lisa-loom")
-    public List<Lemmikloom> lisaLoom(
+    public ResponseEntity<List<Lemmikloom>> lisaLoom(
             @RequestParam String nimetus,
             @RequestParam double kaal,
             @RequestParam String omanikuNimi) {
@@ -49,36 +53,42 @@ public class LemmikloomController {
         omanik.getLemmikloomad().add(lemmikloom);
         omanikRepository.save(omanik);
 
-        return lemmikloomRepository.findAll();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+
+//        return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(lemmikloomRepository.findAll()); // 201
+        return new ResponseEntity<>(lemmikloomRepository.findAll(),headers,HttpStatus.CREATED);
     }
+    // 1. Staatuskoodi võimalik muuta
+    // 2. Seadistada ehk headereid kaasa anda
 
     @GetMapping("loomade-arv")
-    public int saaLoomadeArv(@RequestParam String omanikuNimi) {
+    public ResponseEntity<Integer> saaLoomadeArv(@RequestParam String omanikuNimi) {
         Omanik omanik = omanikRepository.findById(omanikuNimi).get();
-        return omanik.getLemmikloomad().size();
+        return ResponseEntity.ok(omanik.getLemmikloomad().size());
     }
 
     // http://localhost:8080/omaniku-loomad?omanikuNimi=Mihkel
     @GetMapping("omaniku-loomad")
-    public List<Lemmikloom> saaOmanikuLoomad(@RequestParam String omanikuNimi) {
+    public ResponseEntity<List<Lemmikloom>> saaOmanikuLoomad(@RequestParam String omanikuNimi) {
         Omanik omanik = omanikRepository.findById(omanikuNimi).get();
-        return omanik.getLemmikloomad();
+        return ResponseEntity.ok(omanik.getLemmikloomad());
     }
 
     // http://localhost:8080/väikseim-loom?omanikuNimi=Mihkel
     @GetMapping("väikseim-loom")
-    public Lemmikloom saaVaikseimLoom(@RequestParam String omanikuNimi) {
-        return lemmikloomService.getLemmikloom("väiksem", omanikuNimi);
+    public ResponseEntity<Lemmikloom> saaVaikseimLoom(@RequestParam String omanikuNimi) {
+        return ResponseEntity.ok(lemmikloomService.getLemmikloom("väiksem", omanikuNimi));
     }
 
     // http://localhost:8080/suurim-loom?omanikuNimi=Mihkel
     @GetMapping("suurim-loom")
-    public Lemmikloom saaSuurimLoom(@RequestParam String omanikuNimi) {
-        return lemmikloomService.getLemmikloom("suurem", omanikuNimi);
+    public ResponseEntity<Lemmikloom> saaSuurimLoom(@RequestParam String omanikuNimi) {
+        return ResponseEntity.ok(lemmikloomService.getLemmikloom("suurem", omanikuNimi));
     }
 
     @GetMapping("suurim-loom-yldse")
-    public Lemmikloom saaSuurimLoomYldse() {
+    public ResponseEntity<Lemmikloom> saaSuurimLoomYldse() {
 //        List<Lemmikloom> lemmikloomad = lemmikloomRepository.findAll();
 //        Lemmikloom leitudSuurimLemmikloom = lemmikloomad.get(0);
 //        for (Lemmikloom l: lemmikloomad) {
@@ -86,7 +96,7 @@ public class LemmikloomController {
 //                leitudSuurimLemmikloom =  l;
 //            }
 //        }
-        return lemmikloomRepository.findFirstByOrderByKaalDesc();
+        return ResponseEntity.ok(lemmikloomRepository.findFirstByOrderByKaalDesc());
     }
 
     // localhost:8080/saa-loomad-vahemikus?min=1000&max=1100
