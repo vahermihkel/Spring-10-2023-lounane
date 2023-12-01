@@ -3,11 +3,8 @@ package ee.mihkel.resttemplate.controller;
 import ee.mihkel.resttemplate.model.*;
 import ee.mihkel.resttemplate.util.YldisedFunktsioonid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 @RestController
 public class ApiController {
@@ -31,6 +29,12 @@ public class ApiController {
     Random random;
 
 //    RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${everypay.url}")
+    private String url;
+
+    @Value("${everypay.username}")
+    private String everypayUsername;
 
     @GetMapping("omniva") // localhost:8080/omniva
     public List<Omniva> getOmnivaParcelMachines() {
@@ -105,10 +109,10 @@ public class ApiController {
             @RequestParam double amount
     ) {
 
-        String url = "https://igw-demo.every-pay.com/api/v4/payments/oneoff";
+//        String url = url;
 
         EveryPayData body = new EveryPayData();
-        body.setApi_username("e36eb40f5ec87fa2");
+        body.setApi_username(everypayUsername);
         body.setAccount_name("EUR3D1");
         body.setAmount(amount); // hiljem teeme muudetavaks
         body.setOrder_reference(String.valueOf(random.nextInt(10000,999999))); // hiljem teeme muudetavaks
@@ -119,6 +123,7 @@ public class ApiController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth("e36eb40f5ec87fa2", "7b91a3b9e1b74524c2e9fc282f8ac8cd");
+//        headers.set(HttpHeaders.AUTHORIZATION, "TOKEN");
 
         HttpEntity<EveryPayData> entity = new HttpEntity<>(body, headers);
 

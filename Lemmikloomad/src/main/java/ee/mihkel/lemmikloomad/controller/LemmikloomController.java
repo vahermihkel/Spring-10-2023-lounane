@@ -5,6 +5,7 @@ import ee.mihkel.lemmikloomad.entity.Omanik;
 import ee.mihkel.lemmikloomad.model.OmanikDTO;
 import ee.mihkel.lemmikloomad.repository.LemmikloomRepository;
 import ee.mihkel.lemmikloomad.repository.OmanikRepository;
+import ee.mihkel.lemmikloomad.security.TokenGenerator;
 import ee.mihkel.lemmikloomad.service.LemmikloomService;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
@@ -172,4 +173,12 @@ public class LemmikloomController {
 //        omanikRepository.save(leitudOmanik);
 //        return omanikRepository.findAll();
 //    }
+
+    @Autowired
+    TokenGenerator tokenGenerator;
+
+    @GetMapping("login")
+    public String login(String username, String password) {
+        return tokenGenerator.generateToken();
+    }
 }
